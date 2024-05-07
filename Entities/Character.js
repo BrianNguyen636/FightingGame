@@ -12,7 +12,7 @@ class Character {
         this.loadAnimations();
         this.updateBB();
         this.state = 0; 
-        this.facing = 1;
+        this.facing = 0;
     };
     setController(controller) {this.controller = controller};
 

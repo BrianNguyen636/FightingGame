@@ -2,6 +2,7 @@ const gameEngine = new GameEngine();
 const inputManager = new InputManager();
 const ASSET_MANAGER = new AssetManager();
 ASSET_MANAGER.queueDownload("./assets/ReimuSprites.png")
+ASSET_MANAGER.queueDownload("./assets/ReimuSpritesFlip.png")
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");

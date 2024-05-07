@@ -30,29 +30,6 @@ class Player extends Character{
         } 
     };
 
-    hurt(other) {
-        if (this.invuln <= 0 ) {
-            this.health -= 1;
-            this.invuln = 2;
-            this.state = 6;
-            this.controller.knockback(this.BB.midX - other.BB.midX);
-        }
-    };
-
-    getAttackDuration() {
-        return this.controller.attackDuration;
-    }
-
-    updateAttackBox() {
-        let time = this.animations[0][4].totalTime;
-        if (this.controller.attackDuration > 2/7 * time) {
-            if (this.facing == 0) {
-                this.attackBox = new BoundingBox(this.x + 110* 1.5, this.y, 90* 1.5, 120* 1.5);
-            } else {
-                this.attackBox = new BoundingBox(this.x, this.y, 90* 1.5, 120* 1.5);
-            }
-        } else this.attackBox = null;
-    };
 
     update() {
         this.controller.update();
@@ -61,9 +38,7 @@ class Player extends Character{
 
     draw(ctx) {
         // this.drawShadow(ctx);
-        if (this.invuln > 0 && !this.dead()) ctx.globalAlpha = 0.5;
         this.animations[this.facing][this.state].drawFrame(this.game.clockTick, ctx, this.x, this.y);
-        ctx.globalAlpha = 1;
 
         if (this.game.boxView) {
             ctx.strokeStyle = "yellow";
@@ -72,12 +47,6 @@ class Player extends Character{
             ctx.rect(this.BB.x, this.BB.y, this.BB.width, this.BB.height)
             
             ctx.stroke();
-            if (this.attackBox != null) {
-                ctx.beginPath();
-                ctx.strokeStyle = "red";
-                ctx.rect(this.attackBox.x, this.attackBox.y, this.attackBox.width, this.attackBox.height)
-                ctx.stroke();
-            }
         }
     };
 }

@@ -446,22 +446,22 @@ class UIManager {
     //     ctx.globalAlpha = 1;
     // }
 
-    // drawFPS(ctx) {
-    //     ctx.fillStyle = "black";
-    //     ctx.globalAlpha =  0.5;
-    //     ctx.fillRect(0, 0, 80, 30);
-    //     ctx.globalAlpha = 1;
-    //     if (this.frameTimer <= 0) {
-    //         this.fps = this.frameCount;
-    //         this.frameTimer = 1;
-    //         this.frameCount = 0;
-    //     }
-    //     this.frameTimer -= this.game.clockTick;
-    //     this.frameCount++;
-    //     ctx.font = "20px Arial";
-    //     ctx.fillStyle = "green";
-    //     ctx.fillText(this.fps + "fps", 0, 20, 100);
-    // }
+    drawFPS(ctx) {
+        ctx.fillStyle = "black";
+        ctx.globalAlpha =  0.5;
+        ctx.fillRect(0, 0, 80, 30);
+        ctx.globalAlpha = 1;
+        if (this.frameTimer <= 0) {
+            this.fps = this.frameCount;
+            this.frameTimer = 1;
+            this.frameCount = 0;
+        }
+        this.frameTimer -= this.game.clockTick;
+        this.frameCount++;
+        ctx.font = "20px Arial";
+        ctx.fillStyle = "green";
+        ctx.fillText(this.fps + "fps", 0, 20, 100);
+    }
     draw(ctx) {
         this.drawFPS(ctx);
         // if (this.game.roomManager.stage != 0) this.drawTimer(ctx);
