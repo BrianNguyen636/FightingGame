@@ -3,14 +3,14 @@
 class Timer {
     constructor() {
         this.gameTime = 0;
-        this.maxStep = 0.05;
+        this.maxStep = 1000 / 60 / 1000;
         this.lastTimestamp = 0;
         this.timerRun = false;
     };
 
     tick() {
         const current = Date.now();
-        const delta = (current - this.lastTimestamp) / 1000;
+        const delta = (current - this.lastTimestamp) * 1000;
         this.lastTimestamp = current;
         const gameDelta = Math.min(delta, this.maxStep);
         if (this.timerRun) this.gameTime += gameDelta;

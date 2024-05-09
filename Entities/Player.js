@@ -16,6 +16,10 @@ class Player extends Character{
         this.makeAnimation(3, 3, 0, 1, 1); //WALK B
         this.makeAnimation(4, 4, 0, 1, 1); //DASH
         this.makeAnimation(5, 5, 0, 1, 1); //BACKDASH
+        
+        this.makeAnimation(6, 6, 0, 1, 1); //PREJUMP
+        this.makeAnimation(7, 6, 1, 1, 1); //JUMP
+        this.makeAnimation(8, 6, 2, 1, 1); //FALL
     };
 
     updateBB() {
