@@ -8,11 +8,16 @@ class PlayerController {
 
         this.grounded = false;
         this.prejump = 0;
+        this.dashing = false;
 
         this.prejumpFrames = 5;
-        this.fWalk = 200;
-        this.bWalk = 200;
-        this.dashSpeed = 400;
+        this.fWalk = 150;
+        this.bWalk = 150;
+        this.dashSpeed = 8;
+        this.dashAccel = 1;
+        this.backdashTimer = 30;
+        this.backdashDuration = 40;
+        this.backdashVelocity = 8;
 
         this.jumpStrength = 11;
         this.gravity = 0.20;
@@ -26,6 +31,12 @@ class PlayerController {
                 this.prejump = 0;
                 this.player.state = 7;
             }
+        } else if (this.dashing) {
+            if (inputManager.latest.movement == 6 || inputManager.dash) {
+                this.player.state = 4;
+            } else this.dashing = false;
+        } else if (this.player.state == 5 && this.backdashTimer > 0) {
+            this.backdashTimer -= 1;
         }
         else if (this.grounded) { //GROUNDED STATES
             this.player.state = 0;
@@ -33,13 +44,23 @@ class PlayerController {
             if (inputManager.down) {
                 this.player.state = 1;
             } else {
-                if (inputManager.right) {
-                    if (this.player.facing = 0) this.player.state = 3;
-                    else this.player.state = 2;
+                if (inputManager.right && !inputManager.left) {
+                    if (this.player.facing = 0) {
+                        this.player.state = 3;
+                    } else {
+                        this.player.state = 2;
+                    }
+                    this.dashing = inputManager.dashCheck(6) || inputManager.dash; //forward dash
                 }
-                if (inputManager.left) {
+                if (inputManager.left && !inputManager.right) {
                     if (this.player.facing = 0) this.player.state = 2;
                     else this.player.state = 3;
+
+                    if (inputManager.dashCheck(4) || inputManager.dash) {
+                        //back dash
+                        this.player.state = 5;
+                        this.backdashTimer = this.backdashDuration;
+                    } 
                 }
                 if ((inputManager.up && !inputManager.upHold) && this.prejump == 0) { //START THE JUMP
                     this.player.state = 6;
@@ -61,7 +82,15 @@ class PlayerController {
         this.player.x += this.xVelocity;
         if (this.player.state == 2) { this.player.x += this.fWalk * gameEngine.clockTick;}
         if (this.player.state == 3) { this.player.x -= this.fWalk * gameEngine.clockTick;}
-
+        if (this.player.state == 4) {
+            if (this.xVelocity < this.dashSpeed) {
+                this.xVelocity += this.dashAccel;
+                if (this.xVelocity > this.dashSpeed) this.xVelocity = this.dashSpeed; 
+            }
+        }
+        if (this.player.state == 5) {
+            this.xVelocity = -this.backdashVelocity;
+        }
         if (this.player.state == 7 && this.grounded) { // JUMP
             this.grounded = false;
             this.yVelocity = -this.jumpStrength;
@@ -76,7 +105,7 @@ class PlayerController {
         if (!this.grounded) this.yVelocity += this.gravity; //Gravity
         if (this.player.y + this.player.yBoxOffset >= floor && this.yVelocity >= 0) { //Check grounded
             this.yVelocity = 0;
-            this.xVelocity = 0;
+            if (this.player.state != 4 && this.player.state != 5) this.xVelocity = 0;
             this.player.y = floor - this.player.yBoxOffset;
             this.grounded = true;
         }

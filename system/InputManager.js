@@ -16,6 +16,7 @@ class InputManager {
         this.right = false;
         this.up = false;
         this.down = false;
+        this.dash = false;
         this.A = false;
         this.B = false;
         this.C = false;
@@ -25,6 +26,7 @@ class InputManager {
         this.rightHold = false;
         this.upHold = false;
         this.downHold = false;
+        this.dashHold = false;
         this.AHold = false;
         this.BHold = false;
         this.CHold = false;
@@ -36,14 +38,62 @@ class InputManager {
         this.R = false;
         this.key;
         this.keyPress = false;
+
+        this.history=[];
     }
 
     setCtx(ctx) {
         this.ctx = ctx;
     }
+    readInput() {
+        let input = {
+            movement:5,
+            button:''
+        }
+        if (this.left && !this.right) {
+            input.movement = 4;
+        } else if (this.right && !this.left) {
+            input.movement = 6;
+        } else {
+            input.movement = 5;
+        }
+        if (this.up && !this.down) {input.movement += 3;}
+        if (this.down && !this.up) {input.movement -= 3;}
+        switch(true) {
+            case(this.dash): input.button = 'Dash'; break;
+            case(this.A): input.button = 'A'; break;
+            case(this.B): input.button = 'B'; break;
+            case(this.C): input.button = 'C'; break;
+        }
+        return input;
+    }
+
+    dashCheck(direction) {
+        let inputWindow = 20;
+        let index = this.history.length - 1;
+        let neutral = false;
+        while (index >= 0 && inputWindow >= 0) {
+            let input = this.history[index--];
+            inputWindow--;
+            if (input.movement != 5 && input.movement != direction) {
+                return false;
+            }
+            if (neutral && input.movement == direction) return true; 
+            if (input.movement == 5) neutral = true;
+        }
+        return false;
+    }
+
     update() {
         if (this.controllerIndex != null) this.controllerButtons();
         this.buttonHolds();
+        let input = this.readInput()
+        this.latest = input;
+        this.history.push(input)
+        if (this.history.length >= 30) {
+            this.history.shift();
+        }
+        // console.log(input);
     }
 
     defaultKeybinds() {
@@ -51,6 +101,7 @@ class InputManager {
         this.keybinds.set("KeyD", "Right");
         this.keybinds.set("KeyW", "Up");
         this.keybinds.set("KeyS", "Down");
+        this.keybinds.set("KeyM", "Dash");
         this.keybinds.set("KeyJ", "A");
         this.keybinds.set("KeyK", "B");
         this.keybinds.set("KeyL", "C");
@@ -113,12 +164,13 @@ class InputManager {
                     case "Right": that.right = true; break;
                     case "Up": that.up = true; break;
                     case "Down": that.down = true; break;
+                    case "Dash": that.dash = true; break;
                     case "A": that.A = true; break;
                     case "B": that.B = true; break;
                     case "C": that.C = true; break;
                     case "Pause": that.pauseButton = true; break;
                 }
-                console.log(e.code);
+                // console.log(e.code);
             } else if (that.keyBinding) {
                 that.key = e.code;
                 that.keyPress = true;
@@ -131,6 +183,7 @@ class InputManager {
                     case "Right": that.right = false; break;
                     case "Up": that.up = false; break;
                     case "Down": that.down = false; break;
+                    case "Dash": that.dash = false; break;
                     case "A": that.A = false; break;
                     case "B": that.B = false; break;
                     case "C": that.C = false; break;
@@ -160,6 +213,7 @@ class InputManager {
         if (!this.right) this.rightHold = false;
         if (!this.up) this.upHold = false;
         if (!this.down) this.downHold = false;
+        if (!this.dash) this.dashHold = false;
         if (!this.A) this.AHold = false;
         if (!this.B) this.BHold = false;
         if (!this.C) this.CHold = false;
