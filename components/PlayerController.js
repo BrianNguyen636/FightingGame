@@ -16,9 +16,9 @@ class PlayerController {
     this.dashSpeed = 8;
     this.dashAccel = 1;
     this.dashTimer = 0;
-    this.dashDuration = 40;
-    this.backdashTimer = 30;
-    this.backdashDuration = 40;
+    this.dashDuration = 30;
+    this.backdashTimer = 0;
+    this.backdashDuration = 30;
     this.backdashVelocity = 8;
 
     this.jumpStrength = 11;
@@ -42,8 +42,6 @@ class PlayerController {
         // this.dashTimer = this.dashDuration;
         this.dashing = false;
       }
-    } else if (this.player.state == 9 && this.dashTimer > 0) {
-      this.dashTimer -= 1;
     } else if (this.player.state == 5 && this.backdashTimer > 0) {
       this.backdashTimer -= 1;
     } else if (this.grounded) {
@@ -104,11 +102,6 @@ class PlayerController {
       }
     }
 
-    if (Math.abs(this.xVelocity) > 0 && !this.dashing) {
-      this.xVelocity -= 0.2;
-      console.log(this.xVelocity);
-    }
-
     if (this.player.state == 5) {
       this.xVelocity = -this.backdashVelocity;
     }
@@ -131,7 +124,12 @@ class PlayerController {
     ) {
       //Check grounded
       this.yVelocity = 0;
-      if (this.player.state != 4 && this.player.state != 5) this.xVelocity = 0;
+    //   if (this.player.state != 4 && this.player.state != 5) this.xVelocity = 0;
+      if (Math.abs(this.xVelocity) > 0 && this.player.state != 4 && this.player.state != 5) {
+        if (this.xVelocity > 0) this.xVelocity -= 0.5;
+        if (this.xVelocity < 0) this.xVelocity += 0.5;
+        console.log(this.xVelocity);
+      }
       this.player.y = floor - this.player.yBoxOffset;
       this.grounded = true;
     }
