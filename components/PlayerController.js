@@ -38,8 +38,9 @@ class PlayerController {
       if (inputManager.latest.movement == 6 || inputManager.dash) {
         this.player.state = 4;
       } else {
-        this.player.state = 9;
-        this.dashTimer = this.dashDuration;
+        // this.player.state = 9;
+        // this.dashTimer = this.dashDuration;
+        this.dashing = false;
       }
     } else if (this.player.state == 9 && this.dashTimer > 0) {
       this.dashTimer -= 1;
@@ -103,11 +104,9 @@ class PlayerController {
       }
     }
 
-    if (this.player.state == 9) {
-      if (this.xVelocity > 0) {
-        this.xVelocity -= this.dashAccel;
-        if (this.xVelocity < 0) this.xVelocity = 0; // Ensure velocity doesn't go negative
-      }
+    if (Math.abs(this.xVelocity) > 0 && !this.dashing) {
+      this.xVelocity -= 0.2;
+      console.log(this.xVelocity);
     }
 
     if (this.player.state == 5) {
