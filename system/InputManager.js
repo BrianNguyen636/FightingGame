@@ -69,17 +69,19 @@ class InputManager {
     }
 
     dashCheck(direction) {
-        let inputWindow = 20;
+        let inputWindow = 45;
         let index = this.history.length - 1;
         let neutral = false;
+        let ff = false;
         while (index >= 0 && inputWindow >= 0) {
             let input = this.history[index--];
             inputWindow--;
+            if (ff && input.movement != direction) return true; 
             if (input.movement != 5 && input.movement != direction) {
                 return false;
             }
-            if (neutral && input.movement == direction) return true; 
-            if (input.movement == 5) neutral = true;
+            if (neutral && input.movement == direction) ff = true;
+            else if (input.movement == 5) neutral = true;
         }
         return false;
     }
@@ -90,10 +92,10 @@ class InputManager {
         let input = this.readInput()
         this.latest = input;
         this.history.push(input)
-        if (this.history.length >= 30) {
+        if (this.history.length >= 45) {
             this.history.shift();
         }
-        // console.log(input);
+        console.log(input);
     }
 
     defaultKeybinds() {

@@ -128,7 +128,7 @@ class PlayerController {
       if (Math.abs(this.xVelocity) > 0 && this.player.state != 4 && this.player.state != 5) {
         if (this.xVelocity > 0) this.xVelocity -= 0.5;
         if (this.xVelocity < 0) this.xVelocity += 0.5;
-        console.log(this.xVelocity);
+        // console.log(this.xVelocity);
       }
       this.player.y = floor - this.player.yBoxOffset;
       this.grounded = true;
